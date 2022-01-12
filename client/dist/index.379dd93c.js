@@ -523,34 +523,44 @@ var _xterm = require("xterm");
 var _xtermCss = require("xterm/css/xterm.css");
 var _socketIoClient = require("socket.io-client");
 const serverAddress = "http://localhost:8080";
-const term = new _xterm.Terminal();
-const createTerminal = ()=>{
+//* Create terminal just creates a terminal
+const createTerminal = (term)=>{
     term.open(document.getElementById("terminal"));
     term.options = {
-        background: "#202B33",
-        foreground: "#F5F8FA"
     };
     term.write("Hello");
     term.write(`\r\n$ `);
 };
+//* connectToSocket will return a new Promise when the socket connection is successfull
 const connectToSocket = (serverAddress1)=>{
     return new Promise((res)=>{
         const socket = _socketIoClient.io(serverAddress1);
         res(socket);
     });
 };
-connectToSocket(serverAddress).then((socket)=>{
+/* Here we basically call the function connectToSocket and do something if it connects which is basically
+create a terminal and then what onData does is returns the thing that we typed in the terminal and then emit that "input"
+which the data gives us and then finally , if we get data response from the "output", we write that to the terminal
+*/ connectToSocket(serverAddress).then((socket)=>{
+    console.log("The socket is getting first");
     socket.on("connect", ()=>{
         console.log("Id", socket.id);
-        createTerminal();
-        term.onData((data)=>socket.emit("input", data)
-        );
+        console.log("Now the terminal is instantiated");
+        const term = new _xterm.Terminal();
+        console.log("Creating a new terminal now");
+        createTerminal(term);
         socket.on("output", (data)=>{
+            console.log("Now I am getting data from pty", data);
             // When there is data from PTY on server, print that on Terminal.
             term.write(data);
         });
+        term.onData((data)=>{
+            console.log("Now data is being emitted", data);
+            socket.emit("input", data);
+        });
     });
-});
+}).catch((err)=>console.log("Error occured while connecting to socket")
+);
 
 },{"xterm":"b0KFk","xterm/css/xterm.css":"7SVCt","socket.io-client":"7GwBM"}],"b0KFk":[function(require,module,exports) {
 !function(e, t) {
