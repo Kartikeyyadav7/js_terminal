@@ -2,8 +2,7 @@ import { Terminal } from "xterm";
 import "xterm/css/xterm.css";
 import { io } from "socket.io-client";
 
-// const serverAddress = "http://localhost:8080";
-const serverAddress = "http://192.168.43.27/";
+const serverAddress = "http://localhost:8080"; // your server address
 
 //* Create terminal just creates a terminal
 

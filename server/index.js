@@ -15,7 +15,7 @@ httpServer.listen(port, () => {
 
 	const io = new Server(httpServer, {
 		cors: {
-			origin: ["http://localhost:1234", "https://js-terminal.netlify.app/"],
+			origin: ["http://localhost:1234"],
 		},
 	});
 
